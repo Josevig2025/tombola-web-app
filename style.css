@@ -1,0 +1,16 @@
+
+body {
+  font-family: sans-serif;
+  padding: 1em;
+  background: #f4f4f4;
+  color: #333;
+}
+h1, h2 {
+  color: #005577;
+}
+input[type="file"], button {
+  margin-top: 0.5em;
+}
+#results {
+  margin-top: 2em;
+}

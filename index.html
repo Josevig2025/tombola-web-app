@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>App Tómbola</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>App Tómbola</h1>
+  <form id="upload-form">
+    <label for="file">Subir archivo .ods:</label>
+    <input type="file" id="file" accept=".ods" required>
+    <button type="submit">Cargar</button>
+  </form>
+  <section id="results">
+    <h2>Resultados de combinaciones</h2>
+    <div id="frequent-combinations"></div>
+    <div id="delayed-combinations"></div>
+  </section>
+  <script src="script.js"></script>
+</body>
+</html>
