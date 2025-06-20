@@ -1,13 +1,12 @@
-﻿window.addEventListener('load', async () => {
+window.addEventListener('load', async () => {
   const status = document.getElementById('status');
-  status.textContent = "Cargando archivo desde GitHub...";
+  status.textContent = "Cargando archivo desde GitHub Pages...";
 
- const githubODS = "https://josevig2025.github.io/tombola-web-app/gpt_tombola.ods";
-
+  const githubODS = "https://josevig2025.github.io/tombola-web-app/gpt_tombola.ods";
 
   try {
     const response = await fetch(githubODS);
-    if (!response.ok) throw new Error("No se pudo descargar el archivo desde GitHub");
+    if (!response.ok) throw new Error("No se pudo descargar el archivo desde GitHub Pages");
 
     const blob = await response.blob();
     const formData = new FormData();
