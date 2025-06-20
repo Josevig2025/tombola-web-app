@@ -1,4 +1,4 @@
-﻿window.addEventListener('load', async () => {
+window.addEventListener('load', async () => {
   const status = document.getElementById('status');
   status.textContent = "Cargando archivo desde GitHub...";
 
@@ -24,11 +24,14 @@
     const data = await res.json();
     status.textContent = "Archivo procesado correctamente ✅";
 
+    const frecuentes = data["5"].frequent;
+    const atrasadas = data["5"].delayed;
+
     document.getElementById('frequent-combinations').innerHTML = 
-      '<h3>Más frecuentes:</h3>' + data.frequent.map(c => `<div>${c.combo} - ${c.count}</div>`).join('');
+      '<h3>Más frecuentes (5 números):</h3>' + frecuentes.map(c => `<div>${c.combo.join(", ")} - ${c.count}</div>`).join('');
 
     document.getElementById('delayed-combinations').innerHTML = 
-      '<h3>Más atrasadas:</h3>' + data.delayed.map(c => `<div>${c.combo} - ${c.delay} sorteos</div>`).join('');
+      '<h3>Más atrasadas (5 números):</h3>' + atrasadas.map(c => `<div>${c.combo.join(", ")} - ${c.delay} sorteos</div>`).join('');
 
   } catch (error) {
     status.textContent = "⚠️ Error: " + error.message;
