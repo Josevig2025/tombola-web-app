@@ -14,7 +14,7 @@
 
     status.textContent = "Enviando archivo al servidor...";
 
-    const res = await fetch('https://tombola-backend.onrender.com/analyze', {
+    const res = await fetch('https://tombola-backend-rvah.onrender.com/analyze', {
       method: 'POST',
       body: formData
     });
