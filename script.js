@@ -2,7 +2,8 @@
   const status = document.getElementById('status');
   status.textContent = "Cargando archivo desde GitHub...";
 
-  const githubODS = "https://raw.githubusercontent.com/Josevig2025/tombola-web-app/main/gpt_tombola.ods";
+ const githubODS = "https://josevig2025.github.io/tombola-web-app/gpt_tombola.ods";
+
 
   try {
     const response = await fetch(githubODS);
