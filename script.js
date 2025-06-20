@@ -1,4 +1,4 @@
-window.addEventListener('load', async () => {
+﻿window.addEventListener('load', async () => {
   const status = document.getElementById('status');
   status.textContent = "Cargando archivo desde GitHub...";
 
