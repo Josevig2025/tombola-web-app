@@ -1,42 +1,43 @@
 window.addEventListener('load', async () => {
   const status = document.getElementById('status');
-  status.textContent = "Cargando CSV desde GitHub Pages...";
+  status.textContent = "📥 Cargando archivo planilla-tombola.csv desde GitHub...";
 
-  const githubCSV = "https://josevig2025.github.io/tombola-web-app/planilla-tombola.csv";
+  const githubCSV = "https://raw.githubusercontent.com/Josevig2025/tombola-web-app/main/planilla-tombola.csv";
 
   try {
     const response = await fetch(githubCSV);
-    if (!response.ok) throw new Error("No se pudo descargar el archivo desde GitHub Pages");
+    if (!response.ok) throw new Error("❌ No se pudo descargar el archivo desde GitHub");
 
-    const text = await response.text();
-    const lines = text.trim().split("\n");
-    const data = lines.map(line =>
-      line.split(",").map(s => s.trim()).filter(x => x.length).map(Number)
-    );
-
-    status.textContent = "Enviando CSV al servidor...";
-
+    const blob = await response.blob();
     const formData = new FormData();
-    const blob = new Blob([text], { type: "text/csv" });
     formData.append('file', blob, 'planilla-tombola.csv');
+
+    status.textContent = "📡 Enviando archivo al servidor...";
 
     const res = await fetch('https://tombola-backend-rvah.onrender.com/analyze', {
       method: 'POST',
       body: formData
     });
-    if (!res.ok) throw new Error("Error en la respuesta del servidor");
 
-    const resp = await res.json();
-    status.textContent = "Archivo procesado correctamente ✅";
+    if (!res.ok) throw new Error("❌ Error en la respuesta del servidor");
 
-    const frecuentes = resp["5"].frequent;
-    const atrasadas = resp["5"].delayed;
+    const data = await res.json();
+    status.textContent = "✅ Archivo procesado correctamente";
 
-    document.getElementById('frequent-combinations').innerHTML = 
-      '<h3>Más frecuentes (5 números):</h3>' + frecuentes.map(c => `<div>${c.combo.join(", ")} - ${c.count}</div>`).join('');
-
-    document.getElementById('delayed-combinations').innerHTML = 
-      '<h3>Más atrasadas (5 números):</h3>' + atrasadas.map(c => `<div>${c.combo.join(", ")} - ${c.delay} sorteos</div>`).join('');
+    // Mostrar resultados (3, 4 y 5 números)
+    ['3', '4', '5'].forEach(n => {
+      if (data[n]) {
+        const section = document.createElement('section');
+        section.innerHTML = `
+          <h3>🔢 Combinaciones de ${n} números:</h3>
+          <strong>Más frecuentes:</strong>
+          ${data[n].frequent.map(c => `<div>${c.combo.join(', ')} → ${c.count} veces</div>`).join('')}
+          <br><strong>Más atrasadas:</strong>
+          ${data[n].delayed.map(c => `<div>${c.combo.join(', ')} → ${c.delay} sorteos</div>`).join('')}
+        `;
+        document.getElementById('results').appendChild(section);
+      }
+    });
 
   } catch (error) {
     status.textContent = "⚠️ Error: " + error.message;
