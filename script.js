@@ -1,31 +1,36 @@
 window.addEventListener('load', async () => {
   const status = document.getElementById('status');
-  status.textContent = "Cargando archivo desde GitHub Pages...";
+  status.textContent = "Cargando CSV desde GitHub Pages...";
 
-  const githubODS = "https://josevig2025.github.io/tombola-web-app/planilla-tombola.csv";
+  const githubCSV = "https://josevig2025.github.io/tombola-web-app/planilla-tombola.csv";
 
   try {
-    const response = await fetch(githubODS);
+    const response = await fetch(githubCSV);
     if (!response.ok) throw new Error("No se pudo descargar el archivo desde GitHub Pages");
 
-    const blob = await response.blob();
-    const formData = new FormData();
-    formData.append('file', blob, 'gpt_tombola.ods');
+    const text = await response.text();
+    const lines = text.trim().split("\n");
+    const data = lines.map(line =>
+      line.split(",").map(s => s.trim()).filter(x => x.length).map(Number)
+    );
 
-    status.textContent = "Enviando archivo al servidor...";
+    status.textContent = "Enviando CSV al servidor...";
+
+    const formData = new FormData();
+    const blob = new Blob([text], { type: "text/csv" });
+    formData.append('file', blob, 'planilla-tombola.csv');
 
     const res = await fetch('https://tombola-backend-rvah.onrender.com/analyze', {
       method: 'POST',
       body: formData
     });
-
     if (!res.ok) throw new Error("Error en la respuesta del servidor");
 
-    const data = await res.json();
+    const resp = await res.json();
     status.textContent = "Archivo procesado correctamente ✅";
 
-    const frecuentes = data["5"].frequent;
-    const atrasadas = data["5"].delayed;
+    const frecuentes = resp["5"].frequent;
+    const atrasadas = resp["5"].delayed;
 
     document.getElementById('frequent-combinations').innerHTML = 
       '<h3>Más frecuentes (5 números):</h3>' + frecuentes.map(c => `<div>${c.combo.join(", ")} - ${c.count}</div>`).join('');
