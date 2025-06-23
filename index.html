@@ -2,6 +2,52 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
+  <title>Prueba hola.txt</title>
+</head>
+<body>
+  <h1>Subir hola.txt</h1>
+  <input type="file" id="fileInput" accept=".txt">
+  <button onclick="subirArchivo()">Enviar</button>
+
+  <pre id="resultado"></pre>
+
+  <script>
+    function subirArchivo() {
+      const fileInput = document.getElementById('fileInput');
+      const archivo = fileInput.files[0];
+
+      if (!archivo) {
+        alert("Seleccioná un archivo .txt");
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append('file', archivo);
+
+      fetch('https://tombola-api-jose.replit.app/upload', {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => res.text())
+      .then(texto => {
+        document.getElementById('resultado').textContent = texto;
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('resultado').textContent = "Error al enviar.";
+      });
+    }
+  </script>
+</body>
+</html>
+
+
+
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>App Tómbola</title>
   <style>
