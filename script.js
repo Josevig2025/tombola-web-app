@@ -12,7 +12,8 @@ window.addEventListener('load', async () => {
    const form = new FormData();
 form.append('file', fileInput.files[0]);
 
-fetch('https://tombola-backend.onrender.com/upload', {
+fetch('https://tombola-api-jose.replit.app/upload', {
+
   method: 'POST',
   body: form
 })
