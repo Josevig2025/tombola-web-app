@@ -9,15 +9,16 @@ window.addEventListener('load', async () => {
     if (!response.ok) throw new Error("❌ No se pudo descargar el archivo desde GitHub");
 
     const blob = await response.blob();
-    const formData = new FormData();
-    formData.append('file', blob, 'planilla-tombola.csv');
+   const form = new FormData();
+form.append('file', fileInput.files[0]);
 
-    status.textContent = "📡 Enviando archivo al servidor...";
-
-    const res = await fetch('https://tombola-backend-rvah.onrender.com/analyze', {
-      method: 'POST',
-      body: formData
-    });
+fetch('https://tombola-backend.onrender.com/upload', {
+  method: 'POST',
+  body: form
+})
+.then(res => res.json())
+.then(data => console.log('Resultado:', data))
+.catch(err => console.error('Error:', err));
 
     if (!res.ok) throw new Error("❌ Error en la respuesta del servidor");
 
