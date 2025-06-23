@@ -8,12 +8,60 @@
 </head>
 <body>
   <h1>App Tómbola</h1>
-  <div id="status">Cargando datos...</div>
-  <section id="results">
+
+  <div>
+    <input type="file" id="fileInput" accept=".csv" />
+    <button onclick="subirArchivo()">Subir archivo</button>
+  </div>
+
+  <div id="status">Esperando archivo...</div>
+
+  <section id="results" style="display:none;">
     <h2>Resultados de combinaciones</h2>
     <div id="frequent-combinations"></div>
-    <div id="delayed-combinations"></div>
   </section>
-  <script src="script.js"></script>
+
+  <script>
+    function subirArchivo() {
+      const fileInput = document.getElementById('fileInput');
+      const archivo = fileInput.files[0];
+
+      if (!archivo) {
+        alert("Seleccioná un archivo primero");
+        return;
+      }
+
+      const form = new FormData();
+      form.append('file', archivo);
+
+      document.getElementById('status').innerText = "Analizando...";
+
+      fetch('https://tombola-backend.onrender.com/upload', {
+        method: 'POST',
+        body: form
+      })
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('results').style.display = 'block';
+        const container = document.getElementById('frequent-combinations');
+        container.innerHTML = '';
+
+        for (let tamaño in data) {
+          const grupo = data[tamaño];
+          const bloque = document.createElement('div');
+          bloque.innerHTML = `<h3>Combinaciones de ${tamaño} números</h3><ul>` +
+            grupo.map(g => `<li>${g.combinación.join(", ")} → ${g.repeticiones} veces</li>`).join('') +
+            '</ul>';
+          container.appendChild(bloque);
+        }
+
+        document.getElementById('status').innerText = "Archivo procesado correctamente.";
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('status').innerText = "Error al subir el archivo.";
+      });
+    }
+  </script>
 </body>
 </html>
